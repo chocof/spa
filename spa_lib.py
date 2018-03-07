@@ -34,14 +34,15 @@ class spaError(Exception):
 
 slash_os = lambda: '\\' if os.name == 'nt' else '/'
 
-def send_spa(AID, password, seed, new_seed, ip="localhost", port=443):
+def send_spa(AID, password, seed, new_seed, ip="127.0.0.1", port=443):
 	"""
 		Sends an spa packet to ip:port
 		Uses as authentication user AID and password
 		Uses seed to encrypt payload
 	"""
 	try :
-		request = spa_packet.SPAreq(str(AID), str(password), str(seed), str(new_seed))
+		request = spa_packet.SPAreq(str(AID), str(password),\
+			str(seed), str(new_seed), ip, port)
 	except Exception as e:
 		raise spaError(e)
 	#generate random IP address and port
@@ -69,7 +70,9 @@ def port_is_open(ip, port, conn_type=TCP):
 
 # find hosts public ip
 def get_public_ip():
-	return urlopen('http://ip.42.pl/raw').read()
+	ips = urlopen('http://checkip.dyndns.org').read()
+	ip = re.findall( r'[0-9]+(?:\.[0-9]+){3}', ips)
+	return ip[0]
 
 # find hosts network ip (192.**.**.**)
 def get_network_ip():
@@ -211,19 +214,18 @@ class spaListener(threading.Thread):
 		# TODO get packet fields 
 		# get user ip
 		try :
-			ip_src = packet[IP].src
+			ip_src = spa_p.get_ip()
+			port = spa_p.get_port()
 		except Exception as err:
 			return
 		self.logged_users.append(aid)
 		# now allow in firewall
-		self.fw.allow_ip(ip_src, aid)
-
+		self.fw.allow_ip(ip_src, port, aid)
+	
 
 	# model functions
-
 	def add_client(self, password, seed):
 		return self.models.add_client(password, seed)
-
 
 	def edit_client(self, aid, password = None):
 		return self.models.edit_client(aid, password)

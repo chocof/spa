@@ -1,9 +1,5 @@
 # SPA (Single Packet Authorization)
 
-AUTHORS
--------
-[chocof](https://github.com/chocof)
-
 
 Description
 -------

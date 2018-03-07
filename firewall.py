@@ -50,7 +50,7 @@ class spaFirewall(object):
 				i += 1
 				self.allow_ip(ip, 'PRE-ALLOW:' + str(i), ctstate="ESTABLISHED")	
 
-	def allow_ip(self, ip, label, ctstate = "NEW,ESTABLISHED"):
+	def allow_ip(self, ip, port, label, ctstate = "NEW,ESTABLISHED"):
 			
 		rule = iptc.Rule()
 		rule.protocol = "tcp"
@@ -61,7 +61,11 @@ class spaFirewall(object):
 			rule.src = '127.0.0.1'
 		else :
 			rule.src = ip
-	
+		
+		match = iptc.Match(rule,"tcp")
+		match.dport = str(port)
+		rule.add_match(match)
+
 		# TODO add port option
 		match = iptc.Match(rule,"conntrack")
 		match.ctstate = ctstate
@@ -103,15 +107,25 @@ class spaFirewall(object):
 		to_search = "\"%s\"" % (self.me + ":" + label)
 		ip = None
 		for rule in self.chains[INPUT].rules:
-			ip = rule.src.split('/', 1)[0]
-			if  ip !=  '0.0.0.0':
-				break
+			found = False
+			for match in rule.matches:
+				if match.dport:
+					port = match.dport
+				params = match.get_all_parameters()
+				if 'comment' in params:
+					for param in params['comment']:
+						if param.startswith(to_search):
+							ip = rule.src.split('/', 1)[0]
+							found = True
+			if found:
+				break							
 		if not ip :
 			return
+
 		# remove old rule
 		self.remove_ip(label)
 		# add new rule
-		self.allow_ip(ip, label, ctstate = 'ESTABLISHED')
+		self.allow_ip(ip, port, label, ctstate = 'ESTABLISHED')
 		sys.stdout.flush()
 		self.table.refresh()
 	
