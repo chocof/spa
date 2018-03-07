@@ -126,7 +126,7 @@ The seed must be 32 bytes (use the *generate_key* function)
 ##### *edit_client*(aid, password)
 Edits the password of the client with the specified id
 
-##### *remove_client*(aid):)
+##### *remove_client*(aid)
 Removes the client with the specified id
 
 ##### *set_new_seed*(aid, seed)
