@@ -86,8 +86,8 @@ user_files.store(me, {seed : new_seed})
 
 ### Server
 
-#### Class *spaListener*(interface, block_all, change_seeds, allowed_ips, fw_label,\
-		db_host, db_user, db_passwd, db, db_port)
+#### Class *spaListener*(interface, block_all, change_seeds, allowed_ips, fw_label,
+####	db_host, db_user, db_passwd, db, db_port)
 This is the SPA Server. It runs as a background daemon threads, blocks access to all of the system's
 ports, listens for SPA packets and authenticates clients.
 * interface : interface to listen to for packets
