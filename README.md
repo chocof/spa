@@ -63,7 +63,7 @@ Generate random string of size l
 
 #### Usage
 Ideally the client shall try to authenticate itself. The server changes the shared seed only if authentication
-was successful therefore the client shall change the encryption seed only once it authenticated
+was successful therefore the client shall change the encryption seed only once it is authenticated
 
 Example: 
 ```python
@@ -86,7 +86,79 @@ user_files.store(me, {seed : new_seed})
 
 ### Server
 
+#### Class *spaListener*(interface, block_all, change_seeds, allowed_ips, fw_label,
+		db_host, db_user, db_passwd, db, db_port)
+This is the SPA Server. It runs as a background daemon threads, blocks access to all of the system's
+ports, listens for SPA packets and authenticates clients.
+* interface : interface to listen to for packets
+* block_all : block or firewall connections (default : True)
+* change_seeds : change each client's seed to new_seed after successful authentication (default : True)
+* allowed_ips : a list with ips to allow (in case where the block_all option is set)
+* fw_label : the label to add to new firewall rules as a comment (default : 'spa_server')
+* db_host, db_user, db_passwd, dp_port : Credentials used to connect to the database in which client data are stored 
 
+##### *start*()
+Start daemon thread
+
+##### *block*()
+Block program execution until the SPA server closes
+
+##### *terminate*()
+Terminate the SPA server
+
+##### *is_alive*()
+Check if SPA server is alive
+
+##### *add_firewall_entry*(ip, label, ctstate)
+Add a new firewall entry
+* ip : IP to allow firewall entry to
+* label : label to mark new allow rule
+* ctstate : Set rule to accept NEW,ESTABLISHED or both (default : 'NEW, ESTABLISHED')
+
+##### *set_client_established*(label)
+Sets the rule with the corresponding label to established.  
+
+
+#####*add_client*(password, seed)
+Creates a new client to the database with the corresponding password and seed.
+The seed must be 32 bytes (use the *generate_key* function)
+
+
+#####*edit_client*(aid, password)
+Edits the password of the client with the specified id.
+
+#####*remove_client*(aid):)
+Removes the client with the specified id.
+
+#####*set_new_seed*(aid, seed)
+Changes the used shared seed for the client with the specified id.
+
+#####*use_old_seed*(aid)
+Instructs the SPA server to use the previously used shared secret seed to decrypt client messages
+for the client with the corresponding id.
+
+### Usage
+The user has to first initialize the SPA server and then start the SPA daemon thread.
+```python
+
+interface = 'wlan0'
+block_all = True
+change_seeds = True
+allowed_ips = "127.0.0.1"
+fw_label = "my_firewall"
+#mysql creds
+db_host="localhost"
+db_user="root"
+db="spa_db"
+db_passwd="drowssap"
+db_port=3316
+
+s = spa_lib.spaListener(interface, block_all, change_seeds, allowed_ips, fw_label,
+		db_host, db_user, db_passwd, db, db_port)
+#initiate daemon thread
+s.start()
+s.block()
+```
 
 
 Project not yet completed

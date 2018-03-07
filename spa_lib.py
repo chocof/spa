@@ -139,8 +139,8 @@ class spaListener(threading.Thread):
 	def is_alive(self):
 		return self.is_running
 
-	def set_client_established(self, aid):
-		self.fw.set_established(aid)
+	def set_client_established(self, label):
+		self.fw.set_established(label)
 
 	def _stop_filter(self, x):
 		# in order to stop sniffing wait for
