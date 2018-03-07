@@ -7,4 +7,4 @@ seed = "46facea41fdd11e8acf9646e69b26c4f"
 new_seed = "46facea41fdd11e8acf9646e69b26c4a"
 password="jaskdaj"
 
-spa_lib.send_spa(aid, password, seed, new_seed, spa_lib.get_public_ip(), 8888)
+spa_lib.send_spa(aid, password, seed, new_seed, spa_lib.get_network_ip(), 8888)

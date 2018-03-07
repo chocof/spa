@@ -12,6 +12,8 @@ import logging
 import struct
 from scapy.all import *
 from urllib2 import urlopen
+import random
+import string
 
 # directory with configuration
 MAX_USERS = 1024
@@ -34,7 +36,7 @@ class spaError(Exception):
 
 slash_os = lambda: '\\' if os.name == 'nt' else '/'
 
-def send_spa(AID, password, seed, new_seed, ip="127.0.0.1", port=443):
+def send_spa(AID, password, seed, new_seed, ip="127.0.0.1", port=443, server_ip="127.0.0.1"):
 	"""
 		Sends an spa packet to ip:port
 		Uses as authentication user AID and password
@@ -46,7 +48,7 @@ def send_spa(AID, password, seed, new_seed, ip="127.0.0.1", port=443):
 	except Exception as e:
 		raise spaError(e)
 	#generate random IP address and port
-	dst_ip = ip
+	dst_ip = server_ip
 	dst_port = random.randint(MIN_PORT, MAX_PORT)
 
 	# get payload
@@ -78,7 +80,8 @@ def get_public_ip():
 def get_network_ip():
 	return firewall.get_local_ip()
 
-
+def generate_seed(l=32):
+	return ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(l))
 
 STOP_PORT = 6666
 class spaListener(threading.Thread):
