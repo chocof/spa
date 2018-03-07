@@ -116,26 +116,25 @@ Add a new firewall entry
 * ctstate : Set rule to accept NEW,ESTABLISHED or both (default : 'NEW, ESTABLISHED')
 
 ##### *set_client_established*(label)
-Sets the rule with the corresponding label to established.  
+Sets the rule with the corresponding label to established
 
-
-#####*add_client*(password, seed)
+##### *add_client*(password, seed)
 Creates a new client to the database with the corresponding password and seed.
 The seed must be 32 bytes (use the *generate_key* function)
 
 
-#####*edit_client*(aid, password)
-Edits the password of the client with the specified id.
+##### *edit_client*(aid, password)
+Edits the password of the client with the specified id
 
-#####*remove_client*(aid):)
-Removes the client with the specified id.
+##### *remove_client*(aid):)
+Removes the client with the specified id
 
-#####*set_new_seed*(aid, seed)
-Changes the used shared seed for the client with the specified id.
+##### *set_new_seed*(aid, seed)
+Changes the used shared seed for the client with the specified id
 
-#####*use_old_seed*(aid)
+##### *use_old_seed*(aid)
 Instructs the SPA server to use the previously used shared secret seed to decrypt client messages
-for the client with the corresponding id.
+for the client with the corresponding id
 
 ### Usage
 The user has to first initialize the SPA server and then start the SPA daemon thread.
