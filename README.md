@@ -15,6 +15,11 @@ to a list of [attacks](http://www.cipherdyne.org/fwknop/docs/SPA.html)
 SPA is a solution that maintains the basic Port Knocking's idea (authorize -> connect) while trying to solve
 its problems.
 
+Start
+------------
+
+
+
 Implementation
 --------
 
@@ -112,11 +117,11 @@ Check if SPA server is alive
 ##### *add_firewall_entry*(ip, label, ctstate)
 Add a new firewall entry
 * ip : IP to allow firewall entry to
-* label : label to mark new allow rule
+* label : label for new ALLOW rule 
 * ctstate : Set rule to accept NEW,ESTABLISHED or both (default : 'NEW, ESTABLISHED')
 
 ##### *set_client_established*(label)
-Sets the rule with the corresponding label to established
+Sets the rule with the corresponding label to accept connections only from ESTABLISHED clients
 
 ##### *add_client*(password, seed)
 Creates a new client to the database with the corresponding password and seed.
@@ -156,7 +161,11 @@ s = spa_lib.spaListener(interface, block_all, change_seeds, allowed_ips, fw_labe
 		db_host, db_user, db_passwd, db, db_port)
 #initiate daemon thread
 s.start()
-s.block()
+
+try:
+	s.block()
+except KeyboardInterrupt as err:
+	s.terminate()
 ```
 
 
